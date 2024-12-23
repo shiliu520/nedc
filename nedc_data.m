@@ -52,7 +52,7 @@ sim('nedc_cycle.slx');
 figure(5); hold on;
 plot(t_nedc, v_nedc,'b', 'linewidth', 1.5);
 plot(t_sim, v_sim, 'k', 'linewidth', 1.5);
-legend('nedc\_original\_vel', 'nedc\_acc\_interal\_vel');
+legend('nedc\_original\_vel', 'nedc\_acc\_integral\_vel');
 xlabel('time/[s]');
 ylabel('velocity/[km/h]');
 box on;
