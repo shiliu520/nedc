@@ -4,7 +4,8 @@
 %% pkg load tablicious;
 clc;
 
-c = dlmread('csv/nedc.csv');
+T = readtable('csv/nedc.csv','ReadVariableNames',true);
+c = table2array(T);
 nedc.start_velocity = c(:, 1);
 nedc.end_velocity = c(:, 2);
 nedc.acceleration = c(:, 3);
@@ -14,7 +15,7 @@ nedc.duration = c(:, 4);
 duration_nedc = nedc.duration;
 v_nedc = [0;nedc.end_velocity];
 a_nedc = [0;nedc.acceleration];
-sum(duration_nedc)
+sum(duration_nedc);
 t_nedc = [0;cumsum(duration_nedc)];
 v_nedc_sim = struct('signals', [], 'time',[]);
 v_nedc_sim.signals.values = v_nedc;
@@ -38,3 +39,21 @@ track_v = v_nedc(t_nedc>=585);
 track_a = a_nedc(t_nedc>=585);
 figure(4);
 plot(track_t, track_v, 'k');
+
+
+dt = 1e-6;
+t_sample =cumsum(nedc.duration);
+t_sample_minus = t_sample - dt;
+t_sample = reshape([t_sample_minus, t_sample]', [], 1);
+a_sample = reshape([nedc.acceleration, nedc.acceleration]', [], 1);
+t_sample = [0; t_sample];
+a_sample = [a_sample; a_sample(end)];
+sim('nedc_cycle.slx');
+figure(5); hold on;
+plot(t_nedc, v_nedc,'b', 'linewidth', 1.5);
+plot(t_sim, v_sim, 'k', 'linewidth', 1.5);
+legend('nedc\_original\_vel', 'nedc\_acc\_interal\_vel');
+xlabel('time/[s]');
+ylabel('velocity/[km/h]');
+box on;
+figure(5);
